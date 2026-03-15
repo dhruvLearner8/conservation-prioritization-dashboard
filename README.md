@@ -22,6 +22,10 @@ This system ranks grid cells into:
 - `Medium` priority (review and compare),
 - `Low` priority (lower immediate conservation value).
 
+## Screenshot
+![Dashboard](docs/images/image.png)
+
+
 ## Architecture
 
 ```mermaid

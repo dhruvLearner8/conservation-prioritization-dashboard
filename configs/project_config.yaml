@@ -7,11 +7,11 @@ spatial:
   analysis_crs: "EPSG:3348"
   web_crs: "EPSG:4326"
   bbox_wgs84:
-    min_lon: -109.5
-    min_lat: 49.0
-    max_lon: -105.0
-    max_lat: 51.0
-  grid_cell_km: 10
+      min_lon: -111.0
+      min_lat: 49.0
+      max_lon: -101.0
+      max_lat: 55.5
+  grid_cell_km: 20
 
 model:
   weights:
