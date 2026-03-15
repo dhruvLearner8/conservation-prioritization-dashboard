@@ -23,7 +23,7 @@ This system ranks grid cells into:
 - `Low` priority (lower immediate conservation value).
 
 ## Screenshot
-![Dashboard](docs/images/image.png)
+![Dashboard](docs/Images/image.png)
 
 
 ## Architecture
