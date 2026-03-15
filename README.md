@@ -1,174 +1,164 @@
-# Saskatchewan Habitat Prioritization Project
+# Saskatchewan Habitat Prioritization
 
-## What this project is (in simple terms)
+Portfolio project aligned to the Saskatchewan Ministry of Environment Habitat Analyst role (PCAN-style conservation prioritization).
 
-This project is a **practice version of what a Habitat Analyst might do** for conservation planning in Saskatchewan.
+## Project Goal
 
-It takes map-based data, scores each area for conservation value, and shows:
-- which areas are **high priority** for protection,
-- which are **medium priority**,
-- which are **low priority**.
+Build a transparent decision-support workflow that answers:
 
-You can also open an interactive dashboard and test different policy scenarios by changing weights (for example, biodiversity-first vs low-disturbance).
+**"Given limited time and resources, which land areas should be prioritized first for conservation, and why?"**
 
----
+This project does not make final legal decisions.  
+It produces data-driven rankings to support planners, analysts, and leadership.
 
-## Main goal
+## Problem This Solves
 
-The goal is to build a transparent, repeatable workflow that can answer:
+- Conservation resources are limited.
+- Land-use pressure is high (roads, settlements, development).
+- Decision-makers need objective, repeatable, map-based evidence.
 
-**"If we had to prioritize land for conservation, which places should we consider first, and why?"**
+This system ranks grid cells into:
+- `High` priority (protect first),
+- `Medium` priority (review and compare),
+- `Low` priority (lower immediate conservation value).
 
-This matches the type of work in the Habitat Analyst job description:
-- spatial analysis,
-- ecological-style suitability scoring,
-- prioritization maps,
-- decision support outputs for technical and non-technical audiences.
+## Architecture
 
----
+```mermaid
+flowchart LR
+rawData[OpenGeospatialLayers] --> ingest[IngestionAndClipping]
+ingest --> features[CellFeatureEngineering]
+features --> model[WeightedPriorityModel]
+model --> classify[PriorityClassification]
+classify --> outputs[MapsStatsGeoJSONBriefing]
+classify --> dashboard[InteractiveScenarioDashboard]
+```
 
-## How the project works (end-to-end)
+## End-to-End Flow
 
-1. Define a pilot region (Swift Current area) and split it into grid cells.
-2. Collect open geospatial layers.
-3. Create per-cell feature values (wetland signal, disturbance signal, biodiversity proxy, etc.).
-4. Compute a habitat score using weighted factors.
-5. Convert scores into `High / Medium / Low` classes.
-6. Export maps, tables, and briefing outputs.
-7. Provide an interactive dashboard for scenario testing.
+1. Define pilot extent and analysis settings in `configs/project_config.yaml`.
+2. Download and clip source layers to the pilot region (`src/build_real_features.py`).
+3. Build cell-level feature table (biodiversity proxy, wetland density, disturbance, etc.).
+4. Score each cell using weighted factors (`src/run_pipeline.py`).
+5. Classify cells by quantile thresholds: High / Medium / Low.
+6. Export map/statistical outputs and briefing artifacts.
+7. Generate interactive dashboard for policy scenario testing (`src/build_dashboard.py`).
 
----
+## Data Sources
 
-## Where the data comes from
+### Current operational data (open and reproducible)
 
-### Data used right now (operational in this repo)
-
-This project currently uses **open Natural Earth datasets** as transparent proxy layers:
+Used in this repository right now:
 
 - Lakes: `https://naturalearth.s3.amazonaws.com/10m_physical/ne_10m_lakes.zip`
 - Roads: `https://naturalearth.s3.amazonaws.com/10m_cultural/ne_10m_roads.zip`
-- Populated Places: `https://naturalearth.s3.amazonaws.com/10m_cultural/ne_10m_populated_places.zip`
-- Urban Areas: `https://naturalearth.s3.amazonaws.com/10m_cultural/ne_10m_urban_areas.zip`
-- Parks and Protected Lands: `https://naturalearth.s3.amazonaws.com/10m_cultural/ne_10m_parks_and_protected_lands.zip`
+- Populated places: `https://naturalearth.s3.amazonaws.com/10m_cultural/ne_10m_populated_places.zip`
+- Urban areas: `https://naturalearth.s3.amazonaws.com/10m_cultural/ne_10m_urban_areas.zip`
+- Parks/protected lands: `https://naturalearth.s3.amazonaws.com/10m_cultural/ne_10m_parks_and_protected_lands.zip`
 
-Why these were used:
-- They are open and easy to access.
-- They let the full workflow run on any machine.
-- They are good for learning and portfolio demonstration.
+Why this choice:
+- open access,
+- fast to run,
+- good for demonstrating full analyst workflow.
 
-### Data planned for policy-grade upgrade
+### Planned policy-grade replacement
 
-The project also documents official-relevant sources for future replacement (see `docs/data_catalog.md`), including:
-- Saskatchewan digital landcover,
+Documented in `docs/data_catalog.md`:
+- Saskatchewan landcover,
 - Ramsar wetlands,
-- provincial/federal protected and conserved areas context,
-- Saskatchewan GeoHub style layers,
-- climate and species-risk sources.
+- provincial/federal protected area datasets,
+- climate and species-risk inputs.
 
----
+## Model Logic
 
-## What each feature means
+Per cell features are normalized to `0-1` and scored:
 
-For each grid cell, the pipeline creates values in the range `0-1`:
+`score = wb*biodiversity + wf*forest_cover + ww*wetland_density + wd*low_disturbance`
 
-- `biodiversity` (proxy): higher when wetland/protected signals are stronger.
-- `forest_cover` (proxy): naturalness and low-disturbance influenced signal.
-- `wetland_density` (proxy): lake area share + proximity to lakes.
-- `low_disturbance`: inverse of disturbance pressure.
-- `disturbance_index`: roads, populated places, and proximity pressure.
-
-These are proxies, not official ecological field measurements.
-
----
-
-## Scoring model
-
-The default weighted score is:
-
+Default weights:
 - biodiversity: `0.35`
 - forest cover: `0.25`
 - wetland density: `0.20`
 - low disturbance: `0.20`
 
-Then cells are ranked by score and classified by quantiles:
+Classification thresholds:
 - `High`: top 20%
 - `Medium`: middle 50%
 - `Low`: bottom 30%
 
-All weights and thresholds are configurable in `configs/project_config.yaml`.
+## Dashboard (Decision Support)
 
----
+File: `outputs/decision_dashboard.html`
 
-## Interactive dashboard (what you can do)
+Key features:
+- live weight sliders,
+- scenario presets (Baseline, Biodiversity-first, Low-disturbance),
+- map and top-candidate updates in real time,
+- scenario comparison table with Top-20 overlap vs baseline,
+- export current ranking as CSV.
 
-Dashboard file: `outputs/decision_dashboard.html`
+## How This Helps Government
 
-In the dashboard you can:
-- move sliders to change weights live,
-- apply presets (`Baseline`, `Biodiversity-first`, `Low-disturbance`),
-- view top candidate cells and map updates instantly,
-- compare scenarios in a table,
-- see Top-20 overlap with baseline,
-- export current ranking CSV.
+- Supports objective, transparent prioritization decisions.
+- Provides repeatable methodology for briefing materials.
+- Helps compare policy scenarios before recommending options.
+- Produces map/stat outputs usable for technical and non-technical audiences.
+- Can be upgraded to official datasets for stronger policy operations.
 
----
+## JD Alignment (What this demonstrates)
 
-## Folder guide
+- spatial analysis and conservation prioritization,
+- data acquisition, cleaning, and transformation,
+- model development and parameterization,
+- reporting statistics and map products,
+- communication tools for leadership and stakeholders.
 
-- `src/run_pipeline.py` - main scoring and output pipeline.
-- `src/build_real_features.py` - downloads and processes open source layers into `real_features.csv`.
-- `src/build_dashboard.py` - generates dashboard HTML.
-- `configs/project_config.yaml` - region, CRS, model weights, thresholds.
-- `data/raw/` - downloaded raw files + manifest.
-- `data/processed/` - feature and score tables.
-- `outputs/` - maps, dashboard, summaries, GeoJSON.
-- `docs/` - methods, workflow, validation, and dashboard guide.
+## Tech Stack
 
----
+- **Language:** Python 3.12
+- **Geospatial:** `geopandas`, `shapely`, `pyproj`, `pyogrio`
+- **Data processing:** `pandas`, `numpy`, `pyyaml`, `requests`
+- **Visualization:** `matplotlib`, `folium`, Leaflet (inside generated HTML)
+- **Outputs:** CSV, GeoJSON, PNG, interactive HTML dashboard
 
-## How to run (step-by-step)
+## Repository Structure
+
+- `src/build_real_features.py` - data download, clipping, feature engineering.
+- `src/run_pipeline.py` - scoring, classification, reporting outputs.
+- `src/build_dashboard.py` - dashboard HTML generation.
+- `configs/project_config.yaml` - spatial settings, weights, thresholds.
+- `data/raw/` - source downloads and manifest.
+- `data/processed/` - engineered features and scored tables.
+- `outputs/` - maps, dashboard, summaries, candidate polygons.
+- `docs/` - methods, workflow, validation, and usage guides.
+
+## How To Use
 
 From project root:
 
-1. Install dependencies:
-   - `python -m pip install -r requirements.txt`
-2. Build real feature table:
-   - `python src/build_real_features.py`
-3. Run prioritization pipeline:
-   - `python src/run_pipeline.py`
-4. Build dashboard:
-   - `python src/build_dashboard.py`
-5. Open dashboard:
-   - `outputs/decision_dashboard.html`
+1. Install dependencies  
+   `python -m pip install -r requirements.txt`
+2. Build real feature table  
+   `python src/build_real_features.py`
+3. Run prioritization pipeline  
+   `python src/run_pipeline.py`
+4. Build dashboard  
+   `python src/build_dashboard.py`
+5. Open dashboard  
+   `outputs/decision_dashboard.html`
 
----
+## Key Outputs
 
-## Outputs you get
+- `outputs/decision_dashboard.html`
+- `outputs/priority_map.png`
+- `outputs/priority_map.html`
+- `outputs/priority_summary.csv`
+- `outputs/top_candidate_sites.geojson`
+- `outputs/sensitivity_results.csv`
+- `docs/briefing_note.md`
 
-- `outputs/decision_dashboard.html` - interactive scenario tool.
-- `outputs/priority_map.png` - static map snapshot.
-- `outputs/priority_map.html` - interactive map output.
-- `outputs/priority_summary.csv` - class summary stats.
-- `outputs/top_candidate_sites.geojson` - top candidate polygons.
-- `outputs/sensitivity_results.csv` - weight perturbation checks.
-- `docs/briefing_note.md` - plain-language briefing output.
+## Limitations
 
----
-
-## Important limitations
-
-- This is a **learning and portfolio implementation**.
-- Current ecological inputs are **proxy-based**, not full official program datasets.
-- Before real policy use, replace proxies with official Saskatchewan layers and run expert review.
-
----
-
-## Why this is useful for your career
-
-This project shows that you can:
-- build geospatial pipelines,
-- translate ecology/policy goals into a transparent model,
-- communicate results to decision-makers,
-- create interactive decision support tools.
-
-That is exactly the direction of the Habitat Analyst role.
+- Current biodiversity/ecology layers are proxy-based for reproducibility.
+- This is a planning support prototype, not a final designation system.
+- Official deployment should replace proxies with Saskatchewan program datasets and expert validation.
