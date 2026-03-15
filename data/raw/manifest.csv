@@ -1,0 +1,13 @@
+layer_name,source_url,source_org,expected_format,license_notes,access_date_utc,status
+sask_landcover,https://open.canada.ca/data/en/dataset/8d128830-df2b-1b8a-0899-d9e85b9e6d82,Open Government Portal,Raster/GeoTIFF,Open Government Licence - verify at download time,,planned
+predictive_ecosite_map,https://open.canada.ca/data/dataset/e1c67541-f7a8-3133-53f8-001bb6eb815a,Open Government Portal,Vector/Raster,Open Government Licence - verify at download time,,planned
+ramsar_wetlands,https://open.canada.ca/data/en/dataset/a2163142-bc55-fddc-b9a8-ffc96e754522,Open Government Portal,GeoJSON/SHP/GPKG,Open Government Licence - attribution required,,planned
+protected_conserved_areas,https://canadaconservation.ca/home/participate/reporting-protected-and-conserved-areas/,Canada Conservation,Vector,Follow CPCAD and reporting standards,,planned
+roads_network,https://gis.saskatchewan.ca/,Saskatchewan GeoHub,Vector,Check provincial terms and attribution,,planned
+climate_normals,https://climate.weather.gc.ca/,ECCC,Raster/CSV,Open federal license with attribution,,planned
+species_risk_proxy,https://www.biodiversity.sk.ca/HABISask.htm,SK Conservation Data Centre,Summary tables/Vector proxy,Detailed occurrence access may require authorization,,planned
+natural_earth_lakes,https://naturalearth.s3.amazonaws.com/10m_physical/ne_10m_lakes.zip,Natural Earth,Shapefile ZIP,Public domain,2026-03-14T00:00:00Z,downloaded
+natural_earth_roads,https://naturalearth.s3.amazonaws.com/10m_cultural/ne_10m_roads.zip,Natural Earth,Shapefile ZIP,Public domain,2026-03-14T00:00:00Z,downloaded
+natural_earth_populated_places,https://naturalearth.s3.amazonaws.com/10m_cultural/ne_10m_populated_places.zip,Natural Earth,Shapefile ZIP,Public domain,2026-03-14T00:00:00Z,downloaded
+natural_earth_urban_areas,https://naturalearth.s3.amazonaws.com/10m_cultural/ne_10m_urban_areas.zip,Natural Earth,Shapefile ZIP,Public domain,2026-03-14T00:00:00Z,downloaded
+natural_earth_protected_lands,https://naturalearth.s3.amazonaws.com/10m_cultural/ne_10m_parks_and_protected_lands.zip,Natural Earth,Shapefile ZIP,Public domain,2026-03-14T00:00:00Z,downloaded

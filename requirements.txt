@@ -1,0 +1,10 @@
+pandas
+numpy
+matplotlib
+pyyaml
+pyproj
+folium
+requests
+shapely
+geopandas
+pyogrio

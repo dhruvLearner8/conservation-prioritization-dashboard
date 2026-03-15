@@ -1,0 +1,32 @@
+project:
+  name: saskatchewan-habitat-prioritization
+  mvp_region: swift_current_pilot
+
+spatial:
+  source_crs: "EPSG:4326"
+  analysis_crs: "EPSG:3348"
+  web_crs: "EPSG:4326"
+  bbox_wgs84:
+    min_lon: -109.5
+    min_lat: 49.0
+    max_lon: -105.0
+    max_lat: 51.0
+  grid_cell_km: 10
+
+model:
+  weights:
+    biodiversity: 0.35
+    forest_cover: 0.25
+    wetland_density: 0.20
+    low_disturbance: 0.20
+  high_quantile: 0.80
+  low_quantile: 0.30
+
+features:
+  mode: "auto"
+  real_features_file: "data/processed/real_features.csv"
+
+paths:
+  raw_data_dir: "data/raw"
+  processed_data_dir: "data/processed"
+  outputs_dir: "outputs"

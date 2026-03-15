@@ -1,0 +1,5 @@
+scenario,high_cells,medium_cells,low_cells,top20_overlap_with_base,mean_habitat_score
+base,231,574,345,20,0.47193169803353485
+biodiversity_plus10,231,574,345,20,0.4461566853263131
+wetland_plus10,231,574,345,20,0.4390369743401786
+disturbance_plus10,231,574,345,17,0.5198433177358182
